@@ -1,0 +1,12 @@
+{
+   "GET /chkDom" : {
+        "action"        : "apiDom",
+        "controller"    : "DomainController",
+        "regex"         : false
+    },
+    "GET /api-version/:app_version/:platform" : {
+        "action"        : "apiVersion",
+        "controller"    : "DomainController",
+        "regex"         : false
+    }
+}

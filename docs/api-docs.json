@@ -1,0 +1,702 @@
+{
+    "dataTypes": [
+        {
+            "name": "isActive",
+            "dataType": "enum",
+            "options": [
+                {
+                  "value": 1,
+                  "label": "Active"
+                },
+                {
+                  "value": 2,
+                  "label": "Inactive"
+                }
+              ]
+        },
+        {
+            "name": "gender",
+            "dataType": "enum",
+            "options": [
+                {
+                    "value": "M",
+                    "label": "Male"
+                },
+                {
+                  "value": "F",
+                  "label": "Female"
+                }
+              ]
+        },
+        {
+            "name": "txn_type",
+            "dataType": "txn_type",
+            "options": [
+                {
+                    "value": "D",
+                    "label": "Debit"
+                },
+                {
+                  "value": "C",
+                  "label": "Credit"
+                }
+              ]
+        },
+        {
+            "name": "transaction",
+            "dataType": "complex",
+            "fields": [
+                {
+                    "name": "from_id",
+                    "dataType": "number",
+                    "description": "Transaction initiator PK"
+                },
+                {
+                    "name": "from_name",
+                    "dataType": "string",
+                    "description": "Transaction initiator name"
+                },
+                {
+                    "name": "from_img",
+                    "dataType": "string",
+                    "description": "Transaction initiator profile image"
+                },
+                {
+                    "name": "to_id",
+                    "dataType": "number",
+                    "description": "Transaction receiver PK"
+                },
+                {
+                    "name": "to_name",
+                    "dataType": "string",
+                    "description": "Transaction receiver name"
+                },
+                {
+                    "name": "to_img",
+                    "dataType": "string",
+                    "description": "Transaction receiver profile image"
+                },
+                {
+                    "name": "amount",
+                    "dataType": "float",
+                    "description": "Amount of the transaction"
+                }
+                {
+                    "name": "description",
+                    "dataType": "string",
+                    "description": "Description of the transaction. Containts the location info also"
+                }
+                {
+                    "name": "txn_date",
+                    "dataType": "datetime",
+                    "description": "Date of the transaction"
+                }
+                {
+                    "name": "txn_type",
+                    "dataType": "txn_type",
+                    "description": "debit/credit"
+                }
+            ]
+        }
+
+    ],
+
+    "faults":[
+
+            {
+                "error_code":   "server_eror",
+                "responseHeaders": {"status" : 503},
+                "responseParams" : {
+                                        "status" : "error",
+                                        "message": "Server Error"
+                                    }
+            },
+            {
+                "error_code":   "access_token_expired",
+                "responseHeaders" : {"status" : 477},
+                "responseParams"  : {
+                                        "status"  : "error",
+                                        "message" : "access token expired"
+                                    }
+            },
+            {
+                "error_code":   "invalid_credentials",
+                "responseHeaders" : {"status" : 403},
+                "responseParams"  : {
+                                        "status" : "error",
+                                        "message": "invalid user name or password"
+                                    }
+            },
+            {
+                "error_code":   "invalid_request_parameters",
+                "responseHeaders" : {"status" : 401},
+                "responseParams"  : {
+                                        "status"  : "error",
+                                        "message" : "invalid request parameters",
+                                        // this is just an example
+                                        "details" : [
+                                                {"parameter": "email", "message": "invalid email"}
+                                                {"parameter": "amount", "message": "requested amount is more than current balance"}
+
+                                        ]
+                                    }
+            },
+            {
+                "error_code":   "invalid_credentials",
+                "responseHeaders" : {"status" : 403},
+                "responseParams"  : {
+                                        "status" : "error",
+                                        "message": "invalid user name or password"
+                                    }
+            },
+            {
+                "error_code":   "inactive_users",
+                "responseHeaders" : {"status" : 403},
+                "responseParams"  : {
+                                        "status"  : "error",
+                                        "message": "The requested user is inactive"
+                                    }
+            },
+
+    ],
+
+    "resources" : [
+        {
+            "resourceURL": "http://www.amulet.com/api-version",
+            "resourceDescription": "Get API version with respect to APP version.",
+            "requestMethod": "GET",
+            "requestHeaders": {
+                "SecretKey": "My__SECRET__KEY",
+                "accept-encoding": "application/json"
+            },
+            "requestParams": [
+                {
+                    "name": "app_version",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "Android/iPhone App version"
+                }
+            ],
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200
+            },
+            "responseParams": [
+                {
+                "name": "api_version",
+                "dataType": "varchar",
+                "description": "The API version to be used for future calls"
+                }
+            ],
+            "faults": [ "invalid_request_parameters", "server_eror" ]
+        },
+        {
+            "resourceURL": "http://www.amulet.com/auth/login",
+            "resourceDescription": "login API",
+            "requestMethod": "POST",
+            "requestHeaders": {
+                "SecretKey": "My__SECRET__KEY",
+                "accept-encoding": "application/json"
+            },
+
+            "requestParams": [
+                {
+                    "name": "email",
+                    "dataType": "string",
+                    "required": false,
+                    "description": "Email of the user"
+                },
+                {
+                    "name": "phone",
+                    "dataType": "number",
+                    "required": false,
+                    "description": "Phone number of the user, Either email or Phone Number is mandatory"
+                },
+                {
+                    "name": "password",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "user password"
+                },
+                {
+                    "name": "device",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "device on which app is installed"
+                },
+                {
+                    "name": "platform",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "device on which app is installed"
+                },
+                {
+                    "name": "platform_version",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "device platform on which app is installed"
+                },
+                {
+                    "name": "imei",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "imei mapped with app"
+                }
+            ],
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200,
+                "acess_token": "798456132132asdkjcvnioaebve"
+            },
+            "responseParams": [
+                {
+                    "name": "userId",
+                    "dataType": "number",
+                    "description": "Pk for user"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string",
+                    "description": "Name of user"
+                },
+                {
+                    "name": "email",
+                    "dataType": "string",
+                    "description": "email of user"
+                },
+                {
+                    "name": "phoneInumber",
+                    "dataType": "number",
+                    "description": "phone number of user"
+                },
+                {
+                    "name": "profileImg",
+                    "dataType": "string",
+                    "description": "image url"
+                }
+                {
+                    "name": "balance",
+                    "dataType": "float",
+                    "description": "the currnet balance of the user"
+                }
+            ],
+            "faults": [ "invalid_request_parameters", "server_eror" ]
+
+        },
+        {
+            "resourceURL": "http://www.amulet.com/auth/register",
+            "resourceDescription": "Register API",
+            "requestMethod": "POST",
+            "requestHeaders": {
+                "SecretKey": "My__SECRET__KEY",
+                "accept-encoding": "application/json"
+            },
+            "requestParams": [
+                {
+                    "name": "email",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "Email of the user"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string",
+                    "required": false,
+                    "description": "Name of user"
+                },
+                {
+                    "name": "phone",
+                    "dataType": "number",
+                    "required": false,
+                    "description": "Phone number of the user"
+                },
+                {
+                    "name": "password",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "user password"
+                },
+                {
+                    "name": "device",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "device on which app is installed"
+                },
+                {
+                    "name": "platform",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "device on which app is installed"
+                },
+                {
+                    "name": "platform_version",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "device platform on which app is installed"
+                },
+                {
+                    "name": "imei",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "imei mapped with app"
+                }
+            ],
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200,
+                "acess_token": "798456132132asdkjcvnioaebve"
+            },
+            "responseParams": [
+                {
+                    "name": "userId",
+                    "dataType": "number",
+                    "description": "Pk for user"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string",
+                    "description": "Name of user"
+                },
+                {
+                    "name": "email",
+                    "dataType": "string",
+                    "description": "email of user"
+                },
+                {
+                    "name": "phoneInumber",
+                    "dataType": "number",
+                    "description": "phone number of user"
+                },
+                {
+                    "name": "profileImg",
+                    "dataType": "string",
+                    "description": "image url"
+                }
+                {
+                    "name": "balance",
+                    "dataType": "float",
+                    "description": "the currnet balance of the user"
+                }
+            ],
+            "faults": [ "invalid_request_parameters", "server_eror" ]
+
+        },
+
+        {
+            "resourceURL": "http://www.amulet.com/{version}/user/userid",
+            "resourceDescription": "Get User details",
+            "requestMethod": "GET",
+            "requestHeaders": {
+                "access_token": "sndvbkdfvbdsfvjsfdgvajbfyuhvbkeuvbhvjsa"
+            },
+            "requestParams": [
+                {
+                    "name": "userid",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "Primary key of the user"
+                },
+            ],
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200
+            },
+            "responseParams": [
+                {
+                    "name": "userId",
+                    "dataType": "number",
+                    "description": "Pk for user"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string",
+                    "description": "Name of user"
+                },
+                {
+                    "name": "email",
+                    "dataType": "string",
+                    "description": "email of user"
+                },
+                {
+                    "name": "phoneInumber",
+                    "dataType": "number",
+                    "description": "phone number of user"
+                },
+                {
+                    "name": "profileImg",
+                    "dataType": "string",
+                    "description": "image url"
+                }
+                {
+                    "name": "balance",
+                    "dataType": "float",
+                    "description": "the currnet balance of the user"
+                },
+                {
+                    "name": "pending_transactions_count",
+                    "dataType": "number",
+                    "description": "Total number of pending transactions"
+                },
+                {
+                    "name": "pending_transaction",
+                    "dataType": "transaction",
+                    "description": "array of type transaction. has details of lastet 10 pending transactions"
+                },
+                {
+                    "name": "friend_count",
+                    "dataType": "number",
+                    "description": "Total number of Firends"
+                }
+            ],
+            "faults": [ "invalid_request_parameters", "server_eror", "access_token_expired" ]
+        },
+
+        {
+            "resourceURL": "http://www.amulet.com/{version}/user/mytransactions/userid",
+            "resourceDescription": "Get users completed transactions",
+            "requestMethod": "GET",
+            "requestHeaders": {
+                "access_token": "sndvbkdfvbdsfvjsfdgvajbfyuhvbkeuvbhvjsa"
+            },
+            "requestParams": [
+                {
+                    "name": "userid",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "Primary key of the user"
+                },
+            ],
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200
+            },
+            "responseParams": [
+                {
+                    "name": "transactions",
+                    "dataType": "transaction",
+                    "description": "array of type transaction. has details of lastet 10 pending transactions"
+                },
+            ]
+        },
+
+        {
+            "resourceURL": "http://www.amulet.com/feeds",
+            "resourceDescription": "Get all global feeds",
+            "requestMethod": "GET",
+            "requestHeaders": {
+                "secret_key": "798456132132asdkjcvnioaebve"
+            },
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200
+            },
+            "responseParams": [
+                {
+                    "name": "id",
+                    "dataType": "number",
+                    "description": "Pk of transactions"
+                },
+                {
+                    "name": "from_userId",
+                    "dataType": "number",
+                    "description": "Sender User Id"
+                },
+                {
+                    "name": "from_name",
+                    "dataType": "string",
+                    "description": "Sender User Name"
+                },
+                {
+                    "name": "from_profileImg",
+                    "dataType": "string",
+                    "description": "Sender User image path"
+                },
+                {
+                    "name": "to_userId",
+                    "dataType": "number",
+                    "description": "Recipient User Id"
+                },
+                {
+                    "name": "to_name",
+                    "dataType": "string",
+                    "description": "Recipient User Name"
+                },
+                {
+                    "name": "to_profileImg",
+                    "dataType": "string",
+                    "description": "Recipient User image path"
+                },
+                {
+                    "name": "timestamp",
+                    "dataType": "datetime",
+                    "description": "Generated timestamp for transactions"
+                },
+                {
+                    "name": "request_description",
+                    "dataType": "string",
+                    "description": "Transaction request Description"
+                }
+            ]
+        },
+
+        {
+            "resourceURL": "http://www.amulet.com/feeds/{trans_id}/{flag}/{limit}",
+            "resourceDescription": "Get all feeds using transaction id provided in request",
+            "requestMethod": "GET",
+            "requestHeaders": {
+                "secret_key": "798456132132asdkjcvnioaebve"
+            },
+            "requestParams": [
+                {
+                    "name": "trans_id",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "Pk of transactions"
+                },
+                {
+                    "name": "flag",
+                    "dataType": "string",
+                    "required": true,
+                    "description": "It must have value 'new/old' parameter"
+                },
+                {
+                    "name": "limit",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "limit of transactions"
+                }
+            ],
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200
+            },
+            "responseParams": [
+                {
+                    "name": "id",
+                    "dataType": "number",
+                    "description": "Pk of transactions"
+                },
+                {
+                    "name": "from_userId",
+                    "dataType": "number",
+                    "description": "Sender User Id"
+                },
+                {
+                    "name": "from_name",
+                    "dataType": "string",
+                    "description": "Sender User Name"
+                },
+                {
+                    "name": "from_profileImg",
+                    "dataType": "string",
+                    "description": "Sender User image path"
+                },
+                {
+                    "name": "to_userId",
+                    "dataType": "number",
+                    "description": "Recipient User Id"
+                },
+                {
+                    "name": "to_name",
+                    "dataType": "string",
+                    "description": "Recipient User Name"
+                },
+                {
+                    "name": "to_profileImg",
+                    "dataType": "string",
+                    "description": "Recipient User image path"
+                },
+                {
+                    "name": "timestamp",
+                    "dataType": "datetime",
+                    "description": "Generated timestamp for transactions"
+                },
+                {
+                    "name": "request_description",
+                    "dataType": "string",
+                    "description": "Transaction request Description"
+                }
+            ]
+        },
+
+        {
+            "resourceURL": "http://www.amulet.com/sync_contacts",
+            "resourceDescription": "Sync User Contacts List",
+            "requestMethod": "POST",
+            "requestHeaders": {
+                "access_token": "Access_Token_Value",
+                "accept-encoding": "application/json"
+            },
+            "requestParams": [
+                {
+                    "name": "contacts",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "contacts number details of user"
+                }
+            ],
+            "responseHeaders": {
+                "content-type": "application/json",
+                "status": 200
+            },
+            "responseParams": [
+                {
+                    "name": "id",
+                    "dataType": "number",
+                    "description": "Pk of user"
+                },
+                {
+                    "name": "phone_no",
+                    "dataType": "number",
+                    "description": "User Id"
+                },
+                {
+                    "name": "name",
+                    "dataType": "string",
+                    "description": "User Name"
+                }
+            ]
+        },
+
+        {
+            "resourceURL": "http://www.amulet.com//v1_1_1/transaction/request",
+            "resourceDescription": "API for Request Transaction to user",
+            "requestMethod": "POST",
+            "requestHeaders": {
+                "access_token": "Access_Token_Value",
+                "accept-encoding": "application/json"
+            },
+            "requestParams": [
+                {
+                    "name": "from_id",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "Transaction From where to start"
+                },
+                {
+                    "name": "to_id",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "Transaction to start"
+                },
+                {
+                    "name": "amount",
+                    "dataType": "number",
+                    "required": true,
+                    "description": "Amount of rupee to request"
+                }
+            ],
+            "responseParams": [
+                {
+                    "response":"success message"
+                }
+            ]
+
+        }
+
+
+
+    ]// end of resource definition
+
+
+} // end of definition

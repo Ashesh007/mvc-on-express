@@ -1,0 +1,7 @@
+{
+    "GET /chkVersion" : {
+        "action"        : "showV2",
+        "controller"    : "DomainController",
+        "regex"         : false
+    }
+}

@@ -1,0 +1,7 @@
+{
+   "GET /chkDom" : {
+        "action"        : "webDom",
+        "controller"    : "DomainController",
+        "regex"			: false
+    }
+}
